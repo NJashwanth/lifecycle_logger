@@ -9,6 +9,15 @@ A debug-focused, zero-UI Flutter utility package for app and widget lifecycle lo
 - Debug-only by default (`attach(debugOnly: true)`)
 - Minimal API, no dependencies beyond Flutter SDK
 
+## Debug-only behavior
+
+By default, `LifecycleLogger.attach()` runs with `debugOnly: true`.
+
+- In debug mode: observer registration, logs, and callbacks run normally.
+- In profile/release mode: `attach()` becomes a no-op.
+
+If you need lifecycle callbacks outside debug (for local testing), pass `debugOnly: false`.
+
 ## Usage
 
 ```dart
@@ -25,6 +34,12 @@ void main() {
 
 	runApp(const App());
 }
+```
+
+When no longer needed, unregister safely:
+
+```dart
+LifecycleLogger.detach();
 ```
 
 ### Widget lifecycle mixin

@@ -91,6 +91,11 @@ void main() {
     expect(inactiveCount, 1);
   });
 
+  testWidgets('detach is safe even before attach', (tester) async {
+    expect(() => LifecycleLogger.detach(), returnsNormally);
+    expect(() => LifecycleLogger.detach(), returnsNormally);
+  });
+
   testWidgets('callbacks fire only for matching lifecycle states', (
     tester,
   ) async {
