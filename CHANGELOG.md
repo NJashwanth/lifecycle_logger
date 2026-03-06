@@ -1,3 +1,8 @@
+## 0.0.2
+
+* Reduced minimum Flutter SDK requirement to `>=3.0.0`.
+* Updated compatibility handling for lifecycle enum values on older Flutter versions.
+
 ## 0.0.1
 
 * Initial release of `lifecycle_logger`.

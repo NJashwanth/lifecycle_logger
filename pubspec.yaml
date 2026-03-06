@@ -1,6 +1,6 @@
 name: lifecycle_logger
 description: Debug-focused Flutter utility for app and widget lifecycle logging.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/NJashwanth/lifecycle_logger
 repository: https://github.com/NJashwanth/lifecycle_logger
 issue_tracker: https://github.com/NJashwanth/lifecycle_logger/issues
