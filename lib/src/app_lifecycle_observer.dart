@@ -34,7 +34,7 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
         LifecycleLog.log('App detached');
         onDetached?.call();
         break;
-      case AppLifecycleState.hidden:
+      default:
         break;
     }
   }

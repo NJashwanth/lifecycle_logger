@@ -6,8 +6,8 @@ repository: https://github.com/NJashwanth/lifecycle_logger
 issue_tracker: https://github.com/NJashwanth/lifecycle_logger/issues
 
 environment:
-  sdk: ^3.11.0
-  flutter: ">=1.17.0"
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:

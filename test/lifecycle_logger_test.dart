@@ -124,7 +124,6 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.detached);
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
 
     expect(resumeCount, 1);
     expect(pauseCount, 1);

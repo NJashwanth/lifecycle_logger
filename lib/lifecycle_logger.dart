@@ -1,5 +1,3 @@
-library;
-
 import 'package:flutter/widgets.dart';
 
 import 'src/app_lifecycle_observer.dart';
