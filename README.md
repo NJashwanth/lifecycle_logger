@@ -76,3 +76,4 @@ class _MyWidgetState extends State<MyWidget> with LifecycleAware<MyWidget> {
 - `[Lifecycle] App paused`
 - `[Lifecycle] MyWidget initState`
 - `[Lifecycle] MyWidget dispose`
+
