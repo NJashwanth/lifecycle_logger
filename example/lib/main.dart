@@ -29,11 +29,12 @@ void main() {
   LifecycleLogger.attach(
     debugOnly: false,
     enableRouteObserver: true,
+    tag: '[AppLifecycle]',
     sink: _recordEvent,
-    onResume: () => debugPrint('[Lifecycle] Example callback onResume'),
-    onPause: () => debugPrint('[Lifecycle] Example callback onPause'),
-    onInactive: () => debugPrint('[Lifecycle] Example callback onInactive'),
-    onDetached: () => debugPrint('[Lifecycle] Example callback onDetached'),
+    onResume: () => debugPrint('[AppLifecycle] Example callback onResume'),
+    onPause: () => debugPrint('[AppLifecycle] Example callback onPause'),
+    onInactive: () => debugPrint('[AppLifecycle] Example callback onInactive'),
+    onDetached: () => debugPrint('[AppLifecycle] Example callback onDetached'),
   );
   runApp(const ExampleApp());
 }
@@ -77,6 +78,8 @@ class _ExampleHomeState extends State<_ExampleHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Trigger app, widget, and route lifecycle events:'),
+            const SizedBox(height: 8),
+            const Text('Configured tag: [AppLifecycle]'),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -160,12 +163,12 @@ class _LifecycleProbeState extends State<_LifecycleProbe>
     with LifecycleAware<_LifecycleProbe> {
   @override
   void onInit() {
-    debugPrint('[Lifecycle] _LifecycleProbe onInit hook fired');
+    debugPrint('[AppLifecycle] _LifecycleProbe onInit hook fired');
   }
 
   @override
   void onDispose() {
-    debugPrint('[Lifecycle] _LifecycleProbe onDispose hook fired');
+    debugPrint('[AppLifecycle] _LifecycleProbe onDispose hook fired');
   }
 
   @override

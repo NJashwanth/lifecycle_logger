@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Added configurable console log tag via `LifecycleLogger.attach(tag: '...')`.
+
 ## 0.0.3
 
 * Added structured `LifecycleEvent` and `LifecycleEventType` models.

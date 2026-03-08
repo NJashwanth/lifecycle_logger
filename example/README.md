@@ -5,6 +5,7 @@ Minimal example app for validating the `lifecycle_logger` package.
 ## What it demonstrates
 
 - `LifecycleLogger.attach()` in `main()`
+- Custom console tag via `LifecycleLogger.attach(tag: '[AppLifecycle]')`
 - App lifecycle callbacks (`onResume`, `onPause`, `onInactive`, `onDetached`)
 - `LifecycleAware` mixin behavior for widget `initState` and `dispose`
 
@@ -15,5 +16,5 @@ flutter pub get
 flutter run
 ```
 
-Then use the button in the app to dispose/recreate the probe widget and watch
-the debug console for `[Lifecycle]` log entries.
+Then use the buttons in the app to generate widget and route events and watch
+the debug console for `[AppLifecycle]` log entries.

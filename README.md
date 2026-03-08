@@ -8,6 +8,7 @@ A debug-focused, zero-UI Flutter utility package for app and widget lifecycle lo
 - Widget lifecycle logging mixin for `initState` and `dispose`
 - Structured `LifecycleEvent` objects for app, widget, and route events
 - Pluggable event sink (`sink`) for custom telemetry/analytics wiring
+- Configurable console log tag via `attach(tag: '...')`
 - Optional route lifecycle tracking via `LifecycleLogger.routeObserver`
 - Debug-only by default (`attach(debugOnly: true)`)
 - Minimal API, no dependencies beyond Flutter SDK
@@ -53,6 +54,7 @@ final events = <LifecycleEvent>[];
 LifecycleLogger.attach(
 	sink: events.add,
 	logToConsole: false,
+	tag: '[AppLifecycle]',
 	debugOnly: false,
 );
 ```

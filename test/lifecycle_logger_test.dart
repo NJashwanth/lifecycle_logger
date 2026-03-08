@@ -183,4 +183,19 @@ void main() {
     expect(eventTypes, contains(LifecycleEventType.routePop));
     expect(eventTypes, contains(LifecycleEventType.routeRemove));
   });
+
+  testWidgets('custom log tag keeps event flow intact', (tester) async {
+    final events = <LifecycleEvent>[];
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      tag: '[MyLifecycle]',
+      logToConsole: false,
+      sink: events.add,
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    expect(events.length, 1);
+    expect(events.first.type, LifecycleEventType.appResumed);
+  });
 }
