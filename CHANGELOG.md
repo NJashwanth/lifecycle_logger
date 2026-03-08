@@ -1,4 +1,4 @@
-## Unreleased
+## 0.0.3
 
 * Added structured `LifecycleEvent` and `LifecycleEventType` models.
 * Added configurable event sink support through `LifecycleLogger.attach(sink: ..., logToConsole: ...)`.
