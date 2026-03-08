@@ -22,6 +22,7 @@ class LifecycleLogger {
     bool debugOnly = true,
     bool enableRouteObserver = false,
     bool logToConsole = true,
+    String tag = '[Lifecycle]',
     LifecycleEventSink? sink,
     void Function()? onResume,
     void Function()? onPause,
@@ -32,7 +33,7 @@ class LifecycleLogger {
       return;
     }
 
-    LifecycleLog.configure(sink: sink, logToConsole: logToConsole);
+    LifecycleLog.configure(sink: sink, logToConsole: logToConsole, tag: tag);
     _routeObserver.enabled = enableRouteObserver;
 
     if (_attached) {
