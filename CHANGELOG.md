@@ -1,7 +1,6 @@
 ## 0.0.4
 
 * Added configurable console log tag via `LifecycleLogger.attach(tag: '...')`.
-* Added CI publish token configuration for non-interactive pub.dev deployment.
 
 ## 0.0.3
 
