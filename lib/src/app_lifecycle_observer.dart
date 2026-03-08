@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'lifecycle_event.dart';
 import 'logger.dart';
 
 class AppLifecycleObserver extends WidgetsBindingObserver {
@@ -19,19 +20,47 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        LifecycleLog.log('App resumed');
+        LifecycleLog.emit(
+          LifecycleEvent(
+            type: LifecycleEventType.appResumed,
+            message: 'App resumed',
+            timestamp: DateTime.now(),
+            appState: state,
+          ),
+        );
         onResume?.call();
         break;
       case AppLifecycleState.inactive:
-        LifecycleLog.log('App inactive');
+        LifecycleLog.emit(
+          LifecycleEvent(
+            type: LifecycleEventType.appInactive,
+            message: 'App inactive',
+            timestamp: DateTime.now(),
+            appState: state,
+          ),
+        );
         onInactive?.call();
         break;
       case AppLifecycleState.paused:
-        LifecycleLog.log('App paused');
+        LifecycleLog.emit(
+          LifecycleEvent(
+            type: LifecycleEventType.appPaused,
+            message: 'App paused',
+            timestamp: DateTime.now(),
+            appState: state,
+          ),
+        );
         onPause?.call();
         break;
       case AppLifecycleState.detached:
-        LifecycleLog.log('App detached');
+        LifecycleLog.emit(
+          LifecycleEvent(
+            type: LifecycleEventType.appDetached,
+            message: 'App detached',
+            timestamp: DateTime.now(),
+            appState: state,
+          ),
+        );
         onDetached?.call();
         break;
       default:

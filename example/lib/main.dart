@@ -1,9 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:lifecycle_logger/lifecycle_logger.dart';
+
+final ValueNotifier<List<LifecycleEvent>> _eventsNotifier =
+    ValueNotifier<List<LifecycleEvent>>(<LifecycleEvent>[]);
+
+void _recordEvent(LifecycleEvent event) {
+  void apply() {
+    final current = _eventsNotifier.value;
+    final next = <LifecycleEvent>[event, ...current];
+    _eventsNotifier.value = next.take(30).toList();
+  }
+
+  final phase = WidgetsBinding.instance.schedulerPhase;
+  if (phase == SchedulerPhase.idle ||
+      phase == SchedulerPhase.postFrameCallbacks) {
+    apply();
+    return;
+  }
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    apply();
+  });
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   LifecycleLogger.attach(
+    debugOnly: false,
+    enableRouteObserver: true,
+    sink: _recordEvent,
     onResume: () => debugPrint('[Lifecycle] Example callback onResume'),
     onPause: () => debugPrint('[Lifecycle] Example callback onPause'),
     onInactive: () => debugPrint('[Lifecycle] Example callback onInactive'),
@@ -17,8 +43,9 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: _ExampleHome(),
+    return MaterialApp(
+      navigatorObservers: [LifecycleLogger.routeObserver],
+      home: const _ExampleHome(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -44,19 +71,78 @@ class _ExampleHomeState extends State<_ExampleHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('lifecycle_logger example')),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Watch debug console for lifecycle logs.'),
+            const Text('Trigger app, widget, and route lifecycle events:'),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _toggleProbe,
-              child: Text(_showProbe ? 'Dispose probe' : 'Create probe'),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ElevatedButton(
+                  onPressed: _toggleProbe,
+                  child: Text(_showProbe ? 'Dispose probe' : 'Create probe'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        settings: const RouteSettings(name: '/details'),
+                        builder: (_) => const _DetailsPage(),
+                      ),
+                    );
+                  },
+                  child: const Text('Push details page'),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             if (_showProbe) const _LifecycleProbe(),
+            const SizedBox(height: 16),
+            const Text('Recent lifecycle events:'),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ValueListenableBuilder<List<LifecycleEvent>>(
+                valueListenable: _eventsNotifier,
+                builder: (_, events, __) {
+                  if (events.isEmpty) {
+                    return const Text('No events yet.');
+                  }
+                  return ListView.separated(
+                    itemCount: events.length,
+                    separatorBuilder: (_, __) => const Divider(height: 8),
+                    itemBuilder: (_, index) {
+                      final event = events[index];
+                      return Text(
+                        '${event.timestamp.toIso8601String()} - ${event.type.name} - ${event.message}',
+                        style: const TextStyle(fontSize: 12),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailsPage extends StatelessWidget {
+  const _DetailsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Details page')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Pop back'),
         ),
       ),
     );

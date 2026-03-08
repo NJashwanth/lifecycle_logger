@@ -6,6 +6,9 @@ A debug-focused, zero-UI Flutter utility package for app and widget lifecycle lo
 
 - App lifecycle observer via `WidgetsBindingObserver`
 - Widget lifecycle logging mixin for `initState` and `dispose`
+- Structured `LifecycleEvent` objects for app, widget, and route events
+- Pluggable event sink (`sink`) for custom telemetry/analytics wiring
+- Optional route lifecycle tracking via `LifecycleLogger.routeObserver`
 - Debug-only by default (`attach(debugOnly: true)`)
 - Minimal API, no dependencies beyond Flutter SDK
 
@@ -42,6 +45,34 @@ When no longer needed, unregister safely:
 LifecycleLogger.detach();
 ```
 
+### Structured events and custom sink
+
+```dart
+final events = <LifecycleEvent>[];
+
+LifecycleLogger.attach(
+	sink: events.add,
+	logToConsole: false,
+	debugOnly: false,
+);
+```
+
+### Route lifecycle tracking
+
+Attach the provided observer to your app navigator.
+
+```dart
+LifecycleLogger.attach(
+	enableRouteObserver: true,
+	debugOnly: false,
+);
+
+MaterialApp(
+	navigatorObservers: [LifecycleLogger.routeObserver],
+	home: const HomePage(),
+);
+```
+
 ### Widget lifecycle mixin
 
 ```dart
@@ -76,3 +107,4 @@ class _MyWidgetState extends State<MyWidget> with LifecycleAware<MyWidget> {
 - `[Lifecycle] App paused`
 - `[Lifecycle] MyWidget initState`
 - `[Lifecycle] MyWidget dispose`
+
