@@ -61,14 +61,15 @@ jobs:
             echo "Version $version is not on pub.dev yet. Proceeding."
           fi
 
-      - name: Configure pub.dev token
+      - name: Restore pub.dev credentials
         if: ${{ steps.version_check.outputs.already_published == 'false' }}
         env:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
-        run: dart pub token add https://pub.dev --env-var PUB_DEV_TOKEN
+          PUB_CREDENTIALS_B64: ${{ secrets.PUB_CREDENTIALS_B64 }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.config/dart"
+          echo "$PUB_CREDENTIALS_B64" | base64 --decode > "$HOME/.config/dart/pub-credentials.json"
 
       - name: Publish package
         if: ${{ steps.version_check.outputs.already_published == 'false' }}
-        env:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
         run: dart pub publish --force
