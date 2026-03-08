@@ -1,3 +1,10 @@
+## Unreleased
+
+* Added structured `LifecycleEvent` and `LifecycleEventType` models.
+* Added configurable event sink support through `LifecycleLogger.attach(sink: ..., logToConsole: ...)`.
+* Added optional route lifecycle tracking via `LifecycleLogger.routeObserver` and `enableRouteObserver`.
+* Added tests for typed sink events and route observer event emission.
+
 ## 0.0.2
 
 * Reduced minimum Flutter SDK requirement to `>=3.0.0`.
