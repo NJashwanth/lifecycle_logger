@@ -198,4 +198,113 @@ void main() {
     expect(events.length, 1);
     expect(events.first.type, LifecycleEventType.appResumed);
   });
+
+  testWidgets('onEvent callback and events stream receive lifecycle events', (
+    tester,
+  ) async {
+    final callbackEvents = <LifecycleEvent>[];
+    final streamEvents = <LifecycleEvent>[];
+
+    final subscription = LifecycleLogger.events.listen(streamEvents.add);
+    addTearDown(subscription.cancel);
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      logToConsole: false,
+      onEvent: callbackEvents.add,
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+
+    await tester.pump();
+
+    expect(callbackEvents.length, 1);
+    expect(callbackEvents.first.type, LifecycleEventType.appResumed);
+    expect(streamEvents.length, 1);
+    expect(streamEvents.first.type, LifecycleEventType.appResumed);
+  });
+
+  testWidgets('filtering includeTypes only forwards matched events', (
+    tester,
+  ) async {
+    final events = <LifecycleEvent>[];
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      logToConsole: false,
+      sink: events.add,
+      includeTypes: {LifecycleEventType.appResumed},
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+
+    expect(events.length, 1);
+    expect(events.single.type, LifecycleEventType.appResumed);
+  });
+
+  testWidgets('transition callback reports previous and current app states', (
+    tester,
+  ) async {
+    final transitions = <String>[];
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      logToConsole: false,
+      onStateTransition: (previous, current, event) {
+        transitions.add('${previous?.name ?? 'null'} -> ${current.name}');
+        expect(event.appState, current);
+      },
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+
+    expect(transitions, ['null -> resumed', 'resumed -> paused']);
+  });
+
+  testWidgets('sink errors are captured by onSinkError and do not crash', (
+    tester,
+  ) async {
+    final sinkErrors = <Object>[];
+    final callbackEvents = <LifecycleEvent>[];
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      logToConsole: false,
+      sink: (_) {
+        throw StateError('sink failed');
+      },
+      onEvent: callbackEvents.add,
+      onSinkError: (error, _, __) {
+        sinkErrors.add(error);
+      },
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+
+    expect(callbackEvents.length, 1);
+    expect(sinkErrors.length, 1);
+    expect(sinkErrors.single, isA<StateError>());
+  });
+
+  testWidgets('attach metadata is added to emitted events', (tester) async {
+    final events = <LifecycleEvent>[];
+
+    LifecycleLogger.attach(
+      debugOnly: false,
+      logToConsole: false,
+      sink: events.add,
+      metadata: const {
+        'feature': 'lifecycle',
+        'session': 7,
+      },
+    );
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+
+    expect(events.length, 1);
+    expect(events.first.metadata?['feature'], 'lifecycle');
+    expect(events.first.metadata?['session'], 7);
+  });
 }

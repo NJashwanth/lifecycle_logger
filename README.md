@@ -7,6 +7,12 @@ A debug-focused, zero-UI Flutter utility package for app and widget lifecycle lo
 - App lifecycle observer via `WidgetsBindingObserver`
 - Widget lifecycle logging mixin for `initState` and `dispose`
 - Structured `LifecycleEvent` objects for app, widget, and route events
+- Unified event callback via `onEvent`
+- Broadcast stream API via `LifecycleLogger.events`
+- Built-in event filtering (`includeTypes`, route/widget filters)
+- App lifecycle transition callback with previous/current state
+- Sink safety with `onSinkError` error reporting
+- Attach-level metadata enrichment for all emitted events
 - Pluggable event sink (`sink`) for custom telemetry/analytics wiring
 - Configurable console log tag via `attach(tag: '...')`
 - Optional route lifecycle tracking via `LifecycleLogger.routeObserver`
@@ -53,9 +59,69 @@ final events = <LifecycleEvent>[];
 
 LifecycleLogger.attach(
 	sink: events.add,
+	onEvent: (event) {
+		// Runs for every emitted event.
+	},
 	logToConsole: false,
 	tag: '[AppLifecycle]',
 	debugOnly: false,
+);
+```
+
+### Stream-based consumption
+
+```dart
+final subscription = LifecycleLogger.events.listen((event) {
+	debugPrint('stream event: ${event.type}');
+});
+
+// Dispose when no longer needed.
+subscription.cancel();
+```
+
+### Filtering
+
+```dart
+LifecycleLogger.attach(
+	debugOnly: false,
+	includeTypes: {
+		LifecycleEventType.appResumed,
+		LifecycleEventType.appPaused,
+	},
+	excludeRouteNames: {'/debug-only'},
+	onEvent: (event) => debugPrint('filtered: ${event.message}'),
+);
+```
+
+### Transition callback and sink safety
+
+```dart
+LifecycleLogger.attach(
+	debugOnly: false,
+	onStateTransition: (previous, current, event) {
+		debugPrint('transition: ${previous?.name ?? 'none'} -> ${current.name}');
+	},
+	sink: (event) {
+		// Your telemetry sink.
+	},
+	onSinkError: (error, stackTrace, event) {
+		debugPrint('sink error for ${event.type}: $error');
+	},
+);
+```
+
+### Metadata enrichment
+
+```dart
+LifecycleLogger.attach(
+	debugOnly: false,
+	metadata: const {
+		'appFlavor': 'staging',
+		'featureArea': 'navigation',
+	},
+	onEvent: (event) {
+		debugPrint('metadata: ${event.metadata}');
+	},
 );
 ```
 

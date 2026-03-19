@@ -1,3 +1,12 @@
+## 1.0.0
+
+* Added unified event callback support with `LifecycleLogger.attach(onEvent: ...)`.
+* Added broadcast stream API via `LifecycleLogger.events`.
+* Added built-in event filtering support (`includeTypes`, `excludeTypes`, route/widget include/exclude filters, and custom `filter`).
+* Added app lifecycle transition callback support via `onStateTransition(previous, current, event)`.
+* Added sink safety handling with `onSinkError` so sink exceptions do not crash lifecycle delivery.
+* Added attach-level metadata enrichment via `metadata`, now available on `LifecycleEvent.metadata`.
+
 ## 0.0.4
 
 * Added configurable console log tag via `LifecycleLogger.attach(tag: '...')`.
