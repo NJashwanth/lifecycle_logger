@@ -176,3 +176,7 @@ class _MyWidgetState extends State<MyWidget> with LifecycleAware<MyWidget> {
 - `[Lifecycle] MyWidget initState`
 - `[Lifecycle] MyWidget dispose`
 
+## Author
+
+Built by [Jashwanth Neela](https://jneela.dev/).
+
